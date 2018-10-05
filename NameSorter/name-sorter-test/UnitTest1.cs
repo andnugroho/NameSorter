@@ -4,6 +4,10 @@ using NameSorter.Services;
 
 namespace name_sorter_test
 {
+    /// <summary>
+    /// sample testing
+    /// </summary>
+
     [TestClass]
     public class UnitTest1
     {        
