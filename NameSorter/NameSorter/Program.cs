@@ -15,7 +15,7 @@ namespace NameSorter
         {
 
             // for debug purpose
-            //args = new string[] { "./unsorted-names-list.txt" };
+            args = new string[] { "./unsorted-names-list.txt" };
 
             try
             {
@@ -33,37 +33,39 @@ namespace NameSorter
 
                         if (param == "./")
                         {
-
-                            var nameService = new NameService();
-
+                            // get filename from input parameters
                             fileName = args[0].Replace("./", "");
+            
+                            var _dataService = new FileTextDataService(fileName, "sorted-names-list.txt");
 
-                            string currentDirectory = Directory.GetCurrentDirectory();
-                            Console.WriteLine(currentDirectory);
+                            Console.WriteLine("");
+                            Console.WriteLine("UNSORTED NAMES :");
+                            Console.WriteLine("");
 
-                            string filePath = Path.Combine(currentDirectory, fileName);
-                            Console.WriteLine(filePath);
-
-                            string[] unsortedNames = File.ReadAllLines(filePath);
-
-                            List<NameClass> nameClass = new List<NameClass>();
-                            
+                            // Get unsorted names
+                            var unsortedNames = _dataService.GetUnsortedData();
                             foreach (var name in unsortedNames)
                             {
-                                Console.WriteLine(name);
-                                nameClass.Add(nameService.SplitName(name));
+                                Console.WriteLine(name);                                
                             }
 
                             Console.WriteLine("");
-                            Console.WriteLine("SORTED NAMES");
+                            Console.WriteLine("SORTED NAMES :");
                             Console.WriteLine("");
-                            var sortedNames = nameClass.OrderBy(c => c.LastName).ThenBy(c => c.GivenName);
+                            
+                            INameService _nameService = new NameService();
+                            
+                            // Get sorted names
+                            var sortedNames = _nameService.GetSortedNames(unsortedNames);
 
                             foreach (var item in sortedNames)
                             {
                                 Console.WriteLine(item.GivenName + " " + item.LastName);
                             }
 
+                            // Write sorted names to text file
+                            string[] sortedStrings = sortedNames.Select(c => c.GivenName + " " + c.LastName).ToArray();
+                            _dataService.WriteSortedData(sortedStrings);
                         }
                         
                     }
